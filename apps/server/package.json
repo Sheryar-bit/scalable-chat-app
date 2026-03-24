@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@prisma/client": "5.7.0",
-    "ioredis": "^5.3.2",
+    "ioredis": "^5.10.1",
     "kafkajs": "^2.2.4",
     "socket.io": "^4.8.3"
   }
