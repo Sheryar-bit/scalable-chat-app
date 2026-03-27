@@ -9,11 +9,11 @@
     "dev": "tsc-watch --onSuccess \"node dist/index.js\""
   },
   "devDependencies": {
-    "@types/node": "^20.10.4",
-    "prisma": "^5.7.0",
+    "@types/node": "^25.5.0",
+    "prisma": "^7.5.0",
     "ts-node": "^10.9.2",
     "tsc-watch": "^7.2.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   },
   "dependencies": {
     "@prisma/client": "5.7.0",
