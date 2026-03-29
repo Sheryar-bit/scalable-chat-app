@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import { Redis } from "ioredis";
+import { produceMessage } from "./kafka.js"
 import prismaClient from "./prisma.js";
 
 // const redis = new Redis()
@@ -49,16 +50,23 @@ class SocketService {
       });
     });
 
+        //Hamna kya kiya, jou bhi message aya hamaraa pass redis sa hamna usko sab clients kou dediya aur uska baad hamna us msg kou kafka ka andar daldiya.
         sub.subscribe("MESSAGES");
         sub.on("message", async (channel, message) => {
             console.log("New Message from Redis", channel, message);
             const { message: msg } = JSON.parse(message) as { message: string };
             io.emit("message", JSON.stringify({ message: msg }));
-            await prismaClient.message.create({
-                data: {
-                    text: message,
-                },
-            })
+            //Now ab ham apna message kou apna prisma ma nhi rakhna hai
+
+            // await prismaClient.message.create({
+            //     data: {
+            //         text: message,
+            //     },
+            // })
+
+            //ab Hum message kou produce karaga
+            await produceMessage(message)
+            console.log('Message Produced to Kafka Broker')
         });
     }
 
