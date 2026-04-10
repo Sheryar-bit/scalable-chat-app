@@ -5,10 +5,27 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const caPathCandidates = [
+  process.env.KAFKA_SSL_CA_PATH,
+  "./src/services/ca.pem",
+  "./prisma/ca.pem",
+  "./ca.pem",
+].filter((p): p is string => Boolean(p));
+
+const resolvedCaPath = caPathCandidates
+  .map((candidate) => path.resolve(candidate))
+  .find((resolvedPath) => fs.existsSync(resolvedPath));
+
+if (!resolvedCaPath) {
+  throw new Error(
+    "Kafka CA certificate file not found. Set KAFKA_SSL_CA_PATH to a valid ca.pem path."
+  );
+}
+
 const kafka = new Kafka({
     brokers: [process.env.KAFKA_BROKER || ""], 
     ssl: {
-        ca: [fs.readFileSync(path.resolve(process.env.KAFKA_SSL_CA_PATH || "./ca.pem"), "utf-8")], 
+        ca: [fs.readFileSync(resolvedCaPath, "utf-8")], 
     },
     sasl: {
         username: process.env.KAFKA_SASL_USERNAME || "",
